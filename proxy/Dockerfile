@@ -1,5 +1,4 @@
-FROM nginx:alpine
+FROM ssl_nginx
 
-RUN rm -v /etc/nginx/conf.d/*
-
-COPY sites.conf  /etc/nginx/conf.d/
+RUN rm -v /etc/nginx/sites-enabled/*
+ADD sites-enabled/ /etc/nginx/sites-enabled

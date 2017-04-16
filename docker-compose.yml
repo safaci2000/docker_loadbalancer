@@ -1,23 +1,25 @@
 version: '2'
 services:
+    #  ssl_nginx:
+    #    image: ssl_nginx
+    #    build: ssl_nginx
+    #    ports:
+    #    - 443:443
+    #    - 80:80
   app:
-    image: nginx:alpine
+    image: ssl_nginx
     volumes:
-    - ./app/www/:/usr/share/nginx/html/
+    - ./app/www/:/www/
     expose:
-    - 80
+    - 443
   auth:
-    image: nginx:alpine
+    image: ssl_nginx
     volumes:
-    - ./authentication/www/:/usr/share/nginx/html/
+    - ./authentication/www/:/www/
     expose:
-    - 80
-#    ports:
-#    - 9000:80
+    - 443
   proxy:
     build: ./proxy/
-    expose:
-    - 80
     ports:
-    - 80:80
+    - 443:443
     restart: always
