@@ -1,0 +1,15 @@
+version: '2'
+services:
+  app:
+    image: nginx:alpine
+    volumes:
+    - ./app/www/:/usr/share/nginx/html/
+    expose:
+    - 80
+  proxy:
+    build: ./proxy/
+    expose:
+    - 80
+    ports:
+    - 80:80
+    restart: always
