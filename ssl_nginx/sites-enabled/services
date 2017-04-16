@@ -1,0 +1,29 @@
+server {
+
+    listen 80;
+    server_name _;
+    rewrite ^ https://$http_host$request_uri? permanent;
+}
+
+server {
+     listen 443;
+
+     ssl on;
+     ssl_certificate /etc/nginx/certs/default.crt;        # path to your cacert.pem
+     ssl_certificate_key /etc/nginx/certs/default.key;    # path to your privkey.pem
+     server_name example.dev.agkn.net;
+     fastcgi_param   HTTPS               on;
+     fastcgi_param   HTTP_SCHEME         https;
+
+     charset utf-8;
+     ## Override default size cap
+     client_max_body_size 200M;
+
+
+     location / {
+             alias /www/;
+     }
+
+}
+
+

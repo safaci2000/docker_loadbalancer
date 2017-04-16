@@ -1,0 +1,31 @@
+server {
+
+    listen 80;
+    server_name _;
+    rewrite ^ https://$http_host$request_uri? permanent;
+}
+
+server {
+     listen 443;
+
+     resolver 127.0.0.11 valid=5s;
+
+     ssl on;
+     ssl_certificate /etc/nginx/certs/default.crt;        # path to your cacert.pem
+     ssl_certificate_key /etc/nginx/certs/default.key;    # path to your privkey.pem
+     server_name example.dev.agkn.net;
+     fastcgi_param   HTTPS               on;
+     fastcgi_param   HTTP_SCHEME         https;
+
+     set $app https://app;
+     set $auth https://auth/authentication/;
+
+   location / {
+       proxy_pass $app;
+   }
+
+   location /authentication {
+       proxy_pass $auth;
+   }
+
+}
