@@ -1,11 +1,29 @@
 version: '2'
 services:
+  db:
+    image: docker.neustar.com/ms/db:nodata
+    expose:
+    - 5433
+  zk:
+     image: zookeeper
+     ports:
+     - 2181:2181
+  discovery:
+    image: docker.neustar.com/ms/services_discovery:latest
+    env_file: docker_environment
+    expose:
+    - 8443
+    links:
+     - db
+     - zk
   app:
     image: docker.neustar.com/ms/tomcat-jsse-ssl:7-jdk8
     volumes:
     - ./app/www/:/usr/local/tomcat7/webapps/ROOT/
     expose:
     - 8443
+    ports:
+    - 8443:8443
   auth:
     image: docker.neustar.com/ms/tomcat-jsse-ssl:7-jdk8
     volumes:
@@ -14,6 +32,10 @@ services:
     - 8443
   proxy:
     build: ./proxy/
+    depends_on:
+     - 'auth'
+     - 'app'
+     - 'discovery'
     ports:
     - 443:443
     restart: always

@@ -5,6 +5,7 @@ server {
     rewrite ^ https://$http_host$request_uri? permanent;
 }
 
+
 server {
      listen 443;
 
@@ -13,19 +14,36 @@ server {
      ssl on;
      ssl_certificate /etc/nginx/certs/default.crt;        # path to your cacert.pem
      ssl_certificate_key /etc/nginx/certs/default.key;    # path to your privkey.pem
-     server_name example.dev.agkn.net;
+     ssl_verify_client off;
+     server_name _;
      fastcgi_param   HTTPS               on;
      fastcgi_param   HTTP_SCHEME         https;
 
-     set $app https://app:8443;
+
+     charset utf-8;
+     client_max_body_size 200M;
+
+     set $app https://app:8443/;
      set $auth https://auth:8443/authentication/;
+     set $discovery https://discovery:8443/discovery/;
+
 
    location / {
-       proxy_pass $app;
+       proxy_pass $app$1$is_args$args;
+       include /etc/nginx/proxy_params; 
    }
 
-   location /authentication {
-       proxy_pass $auth;
+
+   location ~* ^/authentication/(.*) {
+         proxy_pass $auth$1$is_args$args;
+       include /etc/nginx/proxy_params; 
    }
+
+
+   location ~* ^/discovery/(.*) {
+         proxy_pass $discovery$1$is_args$args;
+       include /etc/nginx/proxy_params; 
+   }
+
 
 }
