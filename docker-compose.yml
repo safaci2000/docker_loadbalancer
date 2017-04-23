@@ -1,23 +1,17 @@
 version: '2'
 services:
-    #  ssl_nginx:
-    #    image: ssl_nginx
-    #    build: ssl_nginx
-    #    ports:
-    #    - 443:443
-    #    - 80:80
   app:
-    image: ssl_nginx
+    image: docker.neustar.com/ms/tomcat-jsse-ssl:7-jdk8
     volumes:
-    - ./app/www/:/www/
+    - ./app/www/:/usr/local/tomcat7/webapps/ROOT/
     expose:
-    - 443
+    - 8443
   auth:
-    image: ssl_nginx
+    image: docker.neustar.com/ms/tomcat-jsse-ssl:7-jdk8
     volumes:
-    - ./authentication/www/:/www/
+    - ./authentication/www/authentication/:/usr/local/tomcat7/webapps/authentication/
     expose:
-    - 443
+    - 8443
   proxy:
     build: ./proxy/
     ports:

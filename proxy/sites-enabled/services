@@ -17,8 +17,8 @@ server {
      fastcgi_param   HTTPS               on;
      fastcgi_param   HTTP_SCHEME         https;
 
-     set $app https://app;
-     set $auth https://auth/authentication/;
+     set $app https://app:8443;
+     set $auth https://auth:8443/authentication/;
 
    location / {
        proxy_pass $app;
